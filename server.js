@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 const { notes } = require('./db/db');
-const uuid = require('uniqid');
+const uniqid = require('uniqid');
 
 app.use(express.urlencoded({ extended:  true }));
 app.use(express.json());
@@ -18,13 +18,16 @@ app.get('/api/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './db/db.json'));
 });
 
-// POST New Note to db
+const noteId = uniqid();
+
+// POST New Note to db w/ unique ID
 app.post('/api/notes', (req, res) => {
   const existingNotes = JSON.parse(fs.readFileSync('./db/db.json'));
 
-  req.body.id = existingNotes.length.uuid;
+  req.body.id = existingNotes.length.noteId;
 
   const newNote = req.body;
+  newNote.id = noteId;
   existingNotes.push(newNote);
 
   fs.writeFileSync('./db/db.json', JSON.stringify(existingNotes));
@@ -32,9 +35,7 @@ app.post('/api/notes', (req, res) => {
   res.json(existingNotes);
 });
 
-
 // Page Load
-
 app.get('/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './public/notes.html'));
 });
