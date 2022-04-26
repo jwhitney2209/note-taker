@@ -18,10 +18,9 @@ app.get('/api/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './db/db.json'));
 });
 
-const noteId = uniqid();
-
 // POST New Note to db w/ unique ID
 app.post('/api/notes', (req, res) => {
+  const noteId = uniqid();
   const existingNotes = JSON.parse(fs.readFileSync('./db/db.json'));
 
   req.body.id = existingNotes.length.noteId;
